@@ -7,7 +7,7 @@
 <br>
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![openpyxl](https://img.shields.io/badge/openpyxl-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)
 
 <br>
 
@@ -35,7 +35,7 @@
 
 ```bash
 # 安装依赖
-pip install pandas openpyxl
+pip install -r requirements.txt
 
 # 运行
 python main.py
@@ -71,6 +71,7 @@ pyinstaller --onefile --windowed --name "供应商表格整合工具" main.py
 | 两表都有该供应商 | 金额/原因用 `+` 拼接（如 `100+200`） |
 | 仅表 1 有 | 直接保留表 1 数据 |
 | 仅表 2 有 | 直接保留表 2 数据 |
+| 表 2 编码重复 | 停止并提示重复编码，避免静默覆盖数据 |
 | 两表都没有 | 不出现在结果中 |
 
 ### 示例

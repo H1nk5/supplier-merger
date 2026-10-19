@@ -14,6 +14,23 @@ thin_border = Border(
 )
 
 
+def build_unique_index(worksheet, key_column=1):
+    """Return row indexes without silently discarding duplicate supplier codes."""
+    index = {}
+    duplicates = set()
+    for row in range(2, worksheet.max_row + 1):
+        code = worksheet.cell(row, key_column).value
+        if code is None:
+            continue
+        if code in index:
+            duplicates.add(str(code))
+        else:
+            index[code] = row
+    if duplicates:
+        raise ValueError('表2存在重复供应商编码: ' + '、'.join(sorted(duplicates)))
+    return index
+
+
 def merge_tables(file1, file2, output):
     wb1 = load_workbook(file1)
     wb2 = load_workbook(file2)
@@ -39,11 +56,12 @@ def merge_tables(file1, file2, output):
         }
 
     # 表2索引
-    ws2_index = {}
-    for row in range(2, ws2.max_row + 1):
-        code = ws2.cell(row, 1).value
-        if code is not None:
-            ws2_index[code] = row
+    try:
+        ws2_index = build_unique_index(ws2)
+    except Exception:
+        wb1.close()
+        wb2.close()
+        raise
 
     merge_cols = [3, 4, 5]  # 单子金额、上货金额、原因
 
@@ -140,6 +158,9 @@ def merge_tables(file1, file2, output):
             ws_out.column_dimensions[letter].width = width
 
     wb_out.save(output)
+    wb1.close()
+    wb2.close()
+    wb_out.close()
     return len(all_rows)
 
 
