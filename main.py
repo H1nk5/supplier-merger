@@ -1,3 +1,5 @@
+import argparse
+import json
 from openpyxl import load_workbook, Workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -216,7 +218,24 @@ class App:
             messagebox.showerror('错误', str(e))
 
 
-if __name__ == '__main__':
+def main(argv=None):
+    parser = argparse.ArgumentParser(description='按供应商编码整合两张 Excel 表')
+    parser.add_argument('--file1', help='主表 XLSX 文件')
+    parser.add_argument('--file2', help='补充表 XLSX 文件')
+    parser.add_argument('--output', help='输出 XLSX 文件')
+    args = parser.parse_args(argv)
+    provided = [args.file1, args.file2, args.output]
+    if any(provided):
+        if not all(provided):
+            parser.error('--file1、--file2 和 --output 必须同时提供')
+        count = merge_tables(args.file1, args.file2, args.output)
+        print(json.dumps({'rows': count, 'output': os.path.abspath(args.output)}, ensure_ascii=False))
+        return 0
     root = tk.Tk()
     App(root)
     root.mainloop()
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

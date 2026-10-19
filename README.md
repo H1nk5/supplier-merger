@@ -40,10 +40,15 @@ pip install -r requirements.txt
 # 运行
 python main.py
 
+# 无界面批处理
+python main.py --file1 主表.xlsx --file2 补充表.xlsx --output 整合结果.xlsx
+
 # 打包 exe
 pip install pyinstaller
 pyinstaller --onefile --windowed --name "供应商表格整合工具" main.py
 ```
+
+GitHub Actions 的 `Windows Release Artifacts` 支持手动构建，并在 `v*` 标签推送时生成 GUI 与命令行两个 Windows EXE。
 
 ---
 
